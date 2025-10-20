@@ -13,16 +13,13 @@ function App() {
     selected: {},
   });
 
-
-
-
   // Initialize watched state with localStorage data
   const getInitialWatched = () => {
     try {
-      const savedWatched = localStorage.getItem('watchedMovies');
+      const savedWatched = localStorage.getItem("watchedMovies");
       return savedWatched ? JSON.parse(savedWatched) : [];
     } catch (error) {
-      console.error('Error parsing saved watched movies:', error);
+      console.error("Error parsing saved watched movies:", error);
       return [];
     }
   };
@@ -31,10 +28,9 @@ function App() {
   const [showWatched, setShowWatched] = useState(false);
   const [isUndefind, setIsUndefined] = useState(false);
 
-
   // Save watched movies to localStorage whenever watched state changes
   useEffect(() => {
-    localStorage.setItem('watchedMovies', JSON.stringify(watched));
+    localStorage.setItem("watchedMovies", JSON.stringify(watched));
   }, [watched]);
 
   const apiurl = "http://www.omdbapi.com/?apikey=eaed2fa3";
@@ -52,7 +48,6 @@ function App() {
       });
     }
   };
-
 
   const handleInput = (e) => {
     let s = e.target.value;
@@ -78,7 +73,9 @@ function App() {
 
   const addToWatched = (movie) => {
     const movieWithRating = { ...movie, rating: 0 };
-    setWatched((prevWatched) => [...prevWatched, movieWithRating]);
+    if (!watched.some((m) => m.imdbID === movie.imdbID)) {
+      setWatched((prevWatched) => [...prevWatched, movieWithRating]);
+    }
   };
 
   const updateRating = (imdbID, newRating) => {
@@ -90,14 +87,10 @@ function App() {
   };
 
   const deleteMovie = (imdbID) => {
-    setWatched((prevWatched) => 
+    setWatched((prevWatched) =>
       prevWatched.filter((movie) => movie.imdbID !== imdbID)
     );
   };
-
-
-
-
 
   return (
     <>
@@ -130,30 +123,35 @@ function App() {
                 })
               }
             >
-              watched movies
+              My library
             </a>
           </div>
         </div>
 
-        {(!showWatched)  ? (
+        {!showWatched ? (
           <main>
             <header>
-              <h1>Movie Library</h1>
+              <h1>Movie & Series Library</h1>
             </header>
             <Search handleInput={handleInput} search={search} />
-            {!isUndefind ?<>          
-              <Results results={state.results} openPopup={openPopup} />
+            {!isUndefind ? (
+              <>
+                <Results results={state.results} openPopup={openPopup} />
 
-              {typeof state.selected.Title != "undefined" ? (
-            <Popup
-                  addToWatched={addToWatched}
-                  selected={state.selected}
-                  closePopup={closePopup}
-            />
+                {typeof state.selected.Title != "undefined" ? (
+                  <Popup
+                    addToWatched={addToWatched}
+                    selected={state.selected}
+                    closePopup={closePopup}
+                  />
+                ) : (
+                  false
+                )}
+              </>
             ) : (
-                false
-              )}</> : <p className="notFound">No result for this input try again !!</p> };
-
+              <p className="notFound">No result for this input try again !!</p>
+            )}
+            ;
           </main>
         ) : (
           false
@@ -164,7 +162,11 @@ function App() {
             <header>
               <h1>My Library </h1>
             </header>
-            <WatchedMovies results={watched} onRatingChange={updateRating} onDeleteMovie={deleteMovie}/>
+            <WatchedMovies
+              results={watched}
+              onRatingChange={updateRating}
+              onDeleteMovie={deleteMovie}
+            />
           </main>
         ) : (
           false
