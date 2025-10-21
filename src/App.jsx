@@ -5,6 +5,8 @@ import Results from "./component/Results";
 import Popup from "./component/Popup";
 import WatchedMovies from "./component/WatchedMovies";
 import Galaxy from "./component/Galaxy";
+import Pattern from "./component/Pattern";
+
 
 function App() {
   const [state, setState] = useState({
@@ -94,15 +96,18 @@ function App() {
 
   return (
     <>
-      <Galaxy
+      {/* <Galaxy
         mouseRepulsion={false}
         mouseInteraction={false}
         density={1.5}
         glowIntensity={0.5}
         saturation={0.8}
-        hueShift={240}
+        hueShift={100}
         speed={1.5}
-      />
+      /> */}
+    
+    <Pattern>
+
       <div className="App">
         <div className="menu">
           <div className="logo">Movie Library</div>
@@ -172,6 +177,9 @@ function App() {
           false
         )}
       </div>
+
+      </Pattern>
+      
     </>
   );
 }
